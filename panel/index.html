@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ROAST — замовлення</title>
+<style>
+  :root { --bg: #f6f0e7; --card: #fffaf3; --ink: #1f1a17; --muted: #7a6e64; --line: #e6dccd; --accent: #c2410c;
+          --new: #2563eb; --confirmed: #7c3aed; --shipped: #d97706; --done: #059669; --cancelled: #dc2626; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #141210; --card: #1d1a17; --ink: #f3ece2; --muted: #a3978b; --line: #2f2a25; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
+  header { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 20px; background: var(--card); border-bottom: 1px solid var(--line); }
+  header h1 { margin: 0; font-size: 18px; letter-spacing: .05em; }
+  .muted { color: var(--muted); font-size: 13px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 20px 16px 40px; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+  .kpi { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+  .kpi b { display: block; font-size: 24px; font-variant-numeric: tabular-nums; margin-top: 2px; }
+  .chart { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; margin: 14px 0; }
+  .bars { display: flex; gap: 10px; align-items: end; height: 90px; margin-top: 10px; }
+  .bars div { flex: 1; display: grid; gap: 4px; justify-items: center; font-size: 12px; color: var(--muted); }
+  .bars span { width: 100%; max-width: 46px; border-radius: 6px 6px 2px 2px; background: var(--c); min-height: 3px; transition: height .4s; }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0; }
+  .filters button { border: 1px solid var(--line); background: var(--card); color: var(--ink); padding: 7px 14px; border-radius: 999px; cursor: pointer; font: inherit; }
+  .filters button.active { background: var(--ink); color: var(--card); }
+  .order { background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--c); border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; }
+  .order h3 { margin: 0; font-size: 16px; }
+  .order ul { margin: 6px 0; padding-left: 18px; color: var(--muted); }
+  .order select { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); align-self: start; }
+  .total { font-weight: 700; font-size: 17px; text-align: right; }
+  .empty { text-align: center; color: var(--muted); padding: 40px 0; }
+  @media (max-width: 600px) { .order { grid-template-columns: 1fr; } .total { text-align: left; } .kpis { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+<header><h1>ROAST · Замовлення</h1><span class="muted" id="updated">Завантаження…</span></header>
+<main>
+  <section class="kpis" id="kpis"></section>
+  <section class="chart"><span class="muted">Замовлення за статусами</span><div class="bars" id="bars"></div></section>
+  <nav class="filters" id="filters"></nav>
+  <section id="list"></section>
+</main>
+<script>
+  const API = location.origin + "/api/admin/orders";
+  const GRIND = { beans: "зерно", filter: "фільтр", espresso: "еспресо" };
+  const PAY = { card: "Карткою онлайн", cod: "Накладений платіж" };
+  let statuses = {}, current = "";
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const money = (n) => `${Number(n).toLocaleString("uk-UA")} ₴`;
+
+  async function load() {
+    let res;
+    try { res = await fetch(API + (current ? `?status=${current}` : "")); } catch { return; }
+    if (!res.ok) { document.getElementById("updated").textContent = "Помилка завантаження"; return; }
+    const d = await res.json();
+    statuses = d.statuses;
+    const s = d.stats;
+    document.getElementById("kpis").innerHTML = [
+      ["Виручка сьогодні", money(s.revenue_today)], ["Виручка всього", money(s.revenue)],
+      ["Середній чек", money(s.avg_check)], ["Замовлень", s.total],
+      ["Топ товар", s.top[0] ? esc(s.top[0].name) : "—"],
+    ].map(([l, v]) => `<div class="kpi"><span class="muted">${l}</span><b>${v}</b></div>`).join("");
+    const max = Math.max(1, ...Object.keys(statuses).map((k) => s[k]));
+    document.getElementById("bars").innerHTML = Object.entries(statuses).map(([k, l]) =>
+      `<div style="--c:var(--${k})"><b>${s[k]}</b><span style="height:${(s[k] / max) * 60}px"></span>${esc(l.split(" ").slice(1).join(" "))}</div>`).join("");
+    const f = document.getElementById("filters");
+    f.innerHTML = [["", "Усі"], ...Object.entries(statuses)].map(([k, l]) => `<button data-k="${k}" class="${k === current ? "active" : ""}">${esc(l)}</button>`).join("");
+    f.querySelectorAll("button").forEach((b) => b.onclick = () => { current = b.dataset.k; load(); });
+    const list = document.getElementById("list");
+    list.innerHTML = d.orders.length ? d.orders.map((o) => `
+      <article class="order" style="--c:var(--${o.status})">
+        <div>
+          <h3>#${o.id} · ${esc(o.name)} <span class="muted">${esc(o.created_at.replace("T", " "))}</span></h3>
+          <div class="muted">📞 <a href="tel:${esc(o.phone.replace(/[^\d+]/g, ""))}">${esc(o.phone)}</a> · 📦 ${esc(o.city)}, ${esc(o.branch)} · ${PAY[o.payment] || o.payment}</div>
+          <ul>${o.items.map((i) => `<li>${esc(i.name)} (${GRIND[i.grind]}) × ${i.qty} — ${money(i.price * i.qty)}</li>`).join("")}</ul>
+          ${o.comment ? `<div class="muted">💬 ${esc(o.comment)}</div>` : ""}
+        </div>
+        <div style="display:grid;gap:8px">
+          <div class="total">${money(o.total)}</div>
+          <select data-id="${o.id}">${Object.entries(statuses).map(([k, l]) => `<option value="${k}" ${k === o.status ? "selected" : ""}>${esc(l)}</option>`).join("")}</select>
+        </div>
+      </article>`).join("") : `<p class="empty">Замовлень немає</p>`;
+    list.querySelectorAll("select").forEach((sel) => sel.onchange = async () => {
+      await fetch(`${API}/${sel.dataset.id}/status`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status: sel.value }) });
+      load();
+    });
+    document.getElementById("updated").textContent = "Оновлено " + new Date().toLocaleTimeString("uk-UA");
+  }
+  load();
+  setInterval(load, 10000);
+</script>
+</body>
+</html>
