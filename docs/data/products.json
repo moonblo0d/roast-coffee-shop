@@ -1,0 +1,10 @@
+[
+  {"id": "eth-yirg", "name": "Ефіопія Іргачеф", "origin": "Ефіопія", "roast": "light", "type": "filter", "price": 420, "weight": 250, "notes": ["бергамот", "жасмин", "лимон"], "color": "#e8b04a", "rating": 4.9, "badge": "Хіт"},
+  {"id": "ken-aa", "name": "Кенія АА Ньєрі", "origin": "Кенія", "roast": "light", "type": "filter", "price": 465, "weight": 250, "notes": ["чорна смородина", "грейпфрут"], "color": "#c4363a", "rating": 4.8},
+  {"id": "col-hui", "name": "Колумбія Уїла", "origin": "Колумбія", "roast": "medium", "type": "universal", "price": 380, "weight": 250, "notes": ["карамель", "червоне яблуко"], "color": "#e07a3a", "rating": 4.7},
+  {"id": "bra-cer", "name": "Бразилія Серрадо", "origin": "Бразилія", "roast": "medium", "type": "espresso", "price": 330, "weight": 250, "notes": ["шоколад", "горіх"], "color": "#8a5a3b", "rating": 4.6},
+  {"id": "gua-ant", "name": "Гватемала Антигуа", "origin": "Гватемала", "roast": "medium", "type": "universal", "price": 395, "weight": 250, "notes": ["какао", "слива", "спеції"], "color": "#5f8a4a", "rating": 4.7},
+  {"id": "esp-blend", "name": "Еспресо-бленд «Ранок»", "origin": "Бразилія / Індія", "roast": "dark", "type": "espresso", "price": 310, "weight": 250, "notes": ["темний шоколад", "солодка"], "color": "#3b2a22", "rating": 4.8, "badge": "Для еспресо"},
+  {"id": "ind-mon", "name": "Індія Монсунд Малабар", "origin": "Індія", "roast": "dark", "type": "espresso", "price": 350, "weight": 250, "notes": ["тютюн", "деревина", "перець"], "color": "#4a4f6b", "rating": 4.5},
+  {"id": "decaf-col", "name": "Колумбія без кофеїну", "origin": "Колумбія", "roast": "medium", "type": "universal", "price": 410, "weight": 250, "notes": ["молочний шоколад", "ваніль"], "color": "#9a8fb0", "rating": 4.6, "badge": "Decaf"}
+]
