@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ROAST — свіжообсмажена кава з доставкою</title>
+<meta name="description" content="Спешелті кава свіжого обсмаження. Зерно або помел під ваш спосіб заварювання. Доставка Новою Поштою.">
+<meta name="theme-color" content="#f6f0e7">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<header class="topbar">
+  <a href="#" class="brand">ROAST<sup>☕</sup></a>
+  <nav class="links">
+    <a href="#catalog">Каталог</a>
+    <a href="#how">Як ми працюємо</a>
+    <a href="#delivery">Доставка</a>
+  </nav>
+  <button class="cart-btn" id="cartBtn" aria-label="Відкрити кошик">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M5 7h14l-1.2 11.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9L5 7Zm3 0V6a4 4 0 0 1 8 0v1"/></svg>
+    <span class="cart-count" id="cartCount">0</span>
+  </button>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-text">
+      <p class="kicker">Обсмажуємо щовівторка · Київ</p>
+      <h1>Кава, яку обсмажили <span>цього тижня</span>, а не минулого року.</h1>
+      <p class="sub">Спешелті-зерно з 7 країн. Змелемо під вашу турку, гейзер чи еспресо-машину й відправимо в день обсмаження.</p>
+      <div class="hero-actions">
+        <a href="#catalog" class="btn">Обрати каву</a>
+        <span class="free-note">🚚 Безкоштовна доставка від 1000 ₴</span>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="bean b1"></div><div class="bean b2"></div><div class="bean b3"></div>
+      <div class="hero-bag" id="heroBag"></div>
+    </div>
+  </section>
+
+  <section class="catalog" id="catalog">
+    <div class="catalog-head">
+      <h2>Каталог</h2>
+      <div class="tools">
+        <input type="search" id="search" placeholder="Пошук: країна, смак…" aria-label="Пошук">
+        <select id="sort" aria-label="Сортування">
+          <option value="popular">Популярні</option>
+          <option value="price-asc">Спочатку дешевші</option>
+          <option value="price-desc">Спочатку дорожчі</option>
+        </select>
+      </div>
+    </div>
+    <div class="chips" id="roastChips" role="group" aria-label="Обсмаження">
+      <button class="chip active" data-roast="">Усі</button>
+      <button class="chip" data-roast="light">Світле</button>
+      <button class="chip" data-roast="medium">Середнє</button>
+      <button class="chip" data-roast="dark">Темне</button>
+    </div>
+    <div class="chips" id="typeChips" role="group" aria-label="Спосіб заварювання">
+      <button class="chip active" data-type="">Будь-який спосіб</button>
+      <button class="chip" data-type="filter">Під фільтр</button>
+      <button class="chip" data-type="espresso">Під еспресо</button>
+      <button class="chip" data-type="universal">Універсальна</button>
+    </div>
+    <div class="grid" id="grid" aria-live="polite"></div>
+    <p class="empty" id="empty" hidden>Нічого не знайшли. Спробуйте змінити фільтри.</p>
+  </section>
+
+  <section class="how" id="how">
+    <h2>Від ферми до вашої чашки</h2>
+    <ol class="steps">
+      <li><b>Зерно</b><span>Купуємо мікролоти напряму у фермерських кооперативів.</span></li>
+      <li><b>Обсмаження</b><span>Щовівторка, невеликими партіями під замовлення.</span></li>
+      <li><b>Помел</b><span>Під ваш спосіб: фільтр, еспресо або залишимо зерно.</span></li>
+      <li><b>Доставка</b><span>Відправляємо в день обсмаження Новою Поштою.</span></li>
+    </ol>
+  </section>
+
+  <section class="delivery" id="delivery">
+    <div>
+      <h2>Доставка й оплата</h2>
+      <p>Нова Пошта по всій Україні — 80 ₴, від 1000 ₴ безкоштовно. Оплата карткою онлайн або при отриманні.</p>
+    </div>
+    <div class="delivery-cards">
+      <div><b>1–2 дні</b><span>доставка після обсмаження</span></div>
+      <div><b>250 г</b><span>герметичний пакет із клапаном</span></div>
+      <div><b>30 днів</b><span>найкращий смак після обсмаження</span></div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <span>© ROAST Coffee</span>
+  <span class="demo">Демо-проєкт для портфоліо. Магазин, товари й ціни вигадані.</span>
+</footer>
+
+<!-- Кошик -->
+<div class="overlay" id="overlay" hidden></div>
+<aside class="drawer" id="drawer" aria-label="Кошик" aria-hidden="true">
+  <div class="drawer-head">
+    <h3 id="drawerTitle">Кошик</h3>
+    <button class="icon-btn" id="closeDrawer" aria-label="Закрити">✕</button>
+  </div>
+
+  <div class="drawer-body" id="cartView">
+    <ul class="cart-list" id="cartList"></ul>
+    <p class="cart-empty" id="cartEmpty">Кошик порожній. Оберіть каву з каталогу ☕</p>
+  </div>
+
+  <form class="drawer-body checkout" id="checkoutView" hidden novalidate>
+    <label>Ім'я та прізвище<input name="name" autocomplete="name" required></label>
+    <small class="err" data-for="name"></small>
+    <label>Телефон<input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+380 50 123 45 67" required></label>
+    <small class="err" data-for="phone"></small>
+    <label>Місто<input name="city" autocomplete="address-level2" placeholder="Київ" required></label>
+    <small class="err" data-for="city"></small>
+    <label>Відділення або поштомат Нової Пошти<input name="branch" placeholder="Відділення №12" required></label>
+    <small class="err" data-for="branch"></small>
+    <fieldset class="pay">
+      <legend>Оплата</legend>
+      <label class="radio"><input type="radio" name="payment" value="card" checked> Карткою онлайн</label>
+      <label class="radio"><input type="radio" name="payment" value="cod"> Накладений платіж</label>
+    </fieldset>
+    <label>Коментар <span class="opt">(необов'язково)</span><textarea name="comment" rows="2" maxlength="300"></textarea></label>
+    <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <p class="form-error" id="formError" role="alert"></p>
+  </form>
+
+  <div class="drawer-body done" id="doneView" hidden>
+    <div class="done-icon">✓</div>
+    <h3>Дякуємо за замовлення!</h3>
+    <p id="doneText"></p>
+  </div>
+
+  <div class="drawer-foot" id="drawerFoot">
+    <div class="ship-progress" id="shipProgress"><div class="bar"><span id="shipBar"></span></div><small id="shipText"></small></div>
+    <div class="sum-row"><span>Товари</span><b id="subtotal">0 ₴</b></div>
+    <div class="sum-row"><span>Доставка</span><b id="deliveryCost">—</b></div>
+    <div class="sum-row total"><span>Разом</span><b id="total">0 ₴</b></div>
+    <button class="btn btn-full" id="primaryBtn" disabled>Оформити замовлення</button>
+    <button class="link-btn" id="backBtn" hidden>← Повернутися до кошика</button>
+  </div>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="assets/app.js"></script>
+</body>
+</html>
